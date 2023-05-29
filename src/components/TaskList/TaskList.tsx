@@ -1,39 +1,37 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from "react";
+import { Text, View } from 'react-native'
+import React from "react";
 import { Checkbox } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
+import { styles } from './styles'
 
 
-const TaskList = ({ tasks, deleteItem, setItOfEditingItem, setModalVisible, setEditInputValue }) => {
+const TaskList = ({ tasks, deleteItem, setItOfEditingItem, setModalVisible, setEditInputValue, changeItemStatus }) => {
   return (
     <View>
       {tasks.map(task => {
         return (
-          <TaskItem key={task.id} task={task} deleteItem={deleteItem} setItOfEditingItem={setItOfEditingItem} setModalVisible={setModalVisible} setEditInputValue={setEditInputValue} />
+          <TaskItem key={task.id} task={task} deleteItem={deleteItem} setItOfEditingItem={setItOfEditingItem} setModalVisible={setModalVisible} setEditInputValue={setEditInputValue} changeItemStatus={changeItemStatus} />
         )
       })}
     </View>
   )
 }
 
-const TaskItem = ({ task, deleteItem, setItOfEditingItem, setModalVisible, setEditInputValue }) => {
-  const [checked, setChecked] = React.useState(false);
-
+const TaskItem = ({ task, deleteItem, setItOfEditingItem, setModalVisible, setEditInputValue, changeItemStatus }) => {
   const startEditing = (idOfItem, bodyText) => {
     setItOfEditingItem(idOfItem)
     setModalVisible('edit')
     setEditInputValue(bodyText)
   }
 
-
   return (
-    <View style={styles.singleTaskContainer}>
+    <View style={[styles.singleTaskContainer, task.status && styles.taskIsDone]}>
       <View style={styles.checkboxWrapper}>
         <Checkbox.Android
           color='#00457E'
           status={task.status ? 'checked' : 'unchecked'}
           onPress={() => {
-            setChecked(!checked);
+            changeItemStatus(task.id)
           }}
         />
       </View>
@@ -61,33 +59,3 @@ const TaskItem = ({ task, deleteItem, setItOfEditingItem, setModalVisible, setEd
 }
 
 export default TaskList
-
-const styles = StyleSheet.create({
-  singleTaskContainer: {
-    minHeight: 80,
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: 'rgba(253, 253, 253, 0.6)',
-    borderRadius: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  checkboxWrapper: {
-    flex: 1,
-  },
-  textWrapper: {
-    flex: 6,
-    right: 5
-  },
-  textEl: {
-    textAlign: 'center',
-    fontSize: 20,
-    width: '90%',
-  },
-  btnsWrapper: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    flexDirection: 'row'
-  }
-})
